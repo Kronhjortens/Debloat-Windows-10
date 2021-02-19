@@ -3,7 +3,7 @@
 # to remove certain Apps comment out the corresponding lines below.
 
 Import-Module -DisableNameChecking $PSScriptRoot\..\lib\take-own.psm1
-Import-Module -DisableNameChecking $PSScriptRoot\..\lib\force-mkdir.psm1
+Import-Module -DisableNameChecking $PSScriptRoot\..\lib\New-FolderForced.psm1
 
 Write-Output "Elevating privileges for this process"
 do {} until (Elevate-Privileges SeTakeOwnershipPrivilege)
@@ -28,7 +28,6 @@ $apps = @(
     "Microsoft.MinecraftUWP"
     "Microsoft.NetworkSpeedTest"
     "Microsoft.Office.OneNote"
-    #"Microsoft.OneConnect"
     "Microsoft.People"
     "Microsoft.Print3D"
     "Microsoft.SkypeApp"
@@ -102,7 +101,6 @@ $apps = @(
     "Flipboard.Flipboard"
     "GAMELOFTSA.Asphalt8Airborne"
     "KeeperSecurityInc.Keeper"
-    "Microsoft.BingNews"
     "NORDCURRENT.COOKINGFEVER"
     "PandoraMediaInc.29680B314EFC2"
     "Playtika.CaesarsSlotsFreeCasino"
@@ -160,15 +158,14 @@ $cdm = @(
     "SystemPaneSuggestionsEnabled"
 )
 
-force-mkdir "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
+New-FolderForced -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager"
 foreach ($key in $cdm) {
-    Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" $key 0
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" $key 0
 }
 
-force-mkdir "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore"
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" "AutoDownload" 2
+New-FolderForced -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore"
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" "AutoDownload" 2
 
 # Prevents "Suggested Applications" returning
-force-mkdir "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent"
-Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableWindowsConsumerFeatures" 1
-
+New-FolderForced -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent"
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableWindowsConsumerFeatures" 1
